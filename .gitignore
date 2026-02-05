@@ -1,0 +1,63 @@
+node_modules
+*.log*
+.nuxt
+.nitro
+.cache
+.env*
+SDK
+.RELATED_SOURCE
+dist
+.vs
+.DS_store
+*-E
+
+components.d.ts
+public/document.pdf
+public/document_cpp.pdf
+.idea
+.vscode
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+package-lock.json
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dev-debug.log
+# Dependency directories
+node_modules/
+# Environment variables
+.env
+.env.*
+!.env.example
+# Editor directories and files
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# OS specific
+.DS_Store
+
+.cursor/
+
+# Task files
+# tasks.json
+# tasks/
+
+# claude & codanna
+.codanna*
+.claude*
+.fastembed_cache
+
+# Android Release 서명 키
+android/keystore.properties
+android/app/zentrix-release-key.keystore

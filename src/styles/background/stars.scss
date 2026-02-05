@@ -1,0 +1,99 @@
+@use 'sass:math';
+@use 'sass:string';
+
+@function multiple-box-shadow($n) {
+  $value: '#{math.random(6000)}px #{math.random(6000)}px rgba(255, 255, 255, 0.35)';
+
+  @for $i from 2 through $n {
+    $value: '#{$value} , #{math.random(6000)}px #{math.random(6000)}px rgba(255, 255, 255, 0.35)';
+  }
+
+  @return string.unquote($value);
+}
+
+$shadows-small: multiple-box-shadow(2200);
+$shadows-medium: multiple-box-shadow(1600);
+$shadows-big: multiple-box-shadow(1000);
+
+#stars {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: $shadows-small;
+  animation: animStar 150s linear infinite;
+
+  &:after {
+    content: ' ';
+    position: fixed;
+    z-index: 1;
+    top: 2000px;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: $shadows-small;
+  }
+}
+
+#stars2 {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: $shadows-medium;
+  animation: animStar 700s linear infinite;
+
+  &:after {
+    content: ' ';
+    position: fixed;
+    z-index: 1;
+    top: 2000px;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: $shadows-medium;
+  }
+}
+
+#stars3 {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: $shadows-big;
+  animation: animStar 50s linear infinite;
+
+  &:after {
+    content: ' ';
+    position: fixed;
+    z-index: 1;
+    top: 2000px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: $shadows-big;
+  }
+}
+
+@keyframes animStar {
+  from {
+    transform: translateY(0px);
+  }
+
+  to {
+    transform: translateY(-2000px);
+  }
+}
