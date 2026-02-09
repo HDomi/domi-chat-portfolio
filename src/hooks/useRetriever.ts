@@ -39,11 +39,11 @@ export const useRetriever = () => {
       }))
 
       // 4. 유사도 정렬 및 Top-K 추출 (상위 3개)
-      const topChunks = scoredChunks.sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 3)
+      const topChunks = scoredChunks.sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 10)
 
       console.log(
         '[메시지]: 유사도 검색 결과',
-        topChunks.map(c => `${c.category} (${c.score?.toFixed(4)})`),
+        topChunks.map(c => `${c.category} (${c.score?.toFixed(11)})`),
       )
 
       // 5. 프롬프트에 주입할 텍스트 생성

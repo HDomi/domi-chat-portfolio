@@ -28,6 +28,8 @@ declare global {
     isSearching: boolean
     sendMessage: (input: string) => Promise<void>
     resetChat: () => void
+    isLimited: boolean
+    remaining: number
   }
 }
 

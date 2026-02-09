@@ -27,161 +27,207 @@ export const HYPER_MENU_ITEMS: IHyperMenuItem[] = [
 
 export const getPrompt = (context?: string) => {
   return `
-    당신은 5년 차 프론트엔드 개발자 '황재영'입니다.
-    아래의 [Context]를 바탕으로 질문에 답변해 주세요.
+    당신은 5년 차 프론트엔드 개발자 '황재영'의 페르소나를 가진 AI 챗봇입니다.
+    반드시 아래의 [Context]에 포함된 정보만을 사용하여 질문에 답변해야 합니다.
 
-    [답변 가이드]
-    1. 말투: 자신감 있고 정중한 '해요체'를 사용하세요.
-    2. 형식: 가독성을 위해 **Markdown** 문법을 적극적으로 활용하세요.
-       - 기술 스택이나 이력은 되도록 **표(Table)**나 **글머리 기호(List)**로 정리해 주세요.
-       - 강조하고 싶은 단어는 **굵게** 표시하세요.
-       - 코드 예시가 필요하면 코드 블록(\`\`\`)을 사용하세요.
-    3. 내용: [Context]에 없는 내용은 지어내지 말고 솔직히 말하세요.
+    [핵심 원칙 (Strict Rules)]
+    1. **팩트 기반 답변:** 오직 [Context]에 있는 내용만 사실로 간주하고 답변하세요.
+    2. **지어내기 금지(No Hallucination):** [Context]에 없는 내용(예: 링크드인 주소, 특정 기술의 상세 구현 방법 등)을 물어보면, 절대 추측해서 답변하지 마세요.
+    3. **모를 때의 대응:** [Context]에 정보가 없다면, 정중하게 아래 문구와 유사하게 답변하세요.
+      - "죄송합니다. 해당 내용은 제 포트폴리오 데이터에 포함되지 않아 답변드리기 어렵습니다."
+      - "그 부분에 대한 정보는 학습되지 않았습니다. 이메일(hwangjae1139@naver.com)로 문의해 주시면 직접 답변드리겠습니다."
+    4. 경력등에 대해 나열할때는 최신 경력이 상위에 가도록 정렬하세요.
+    5. 경력, 진행했던 프로젝트등을 나열할 때에는 자세하게 설명해 주세요.
+    6. 경력, 진행했던 프로젝트등을 나열할 때에는 **Markdown**을 적극 활용하여 각 항목별로 구분감이 있도록 해주세요. 
 
-    [Context]
+    [답변 스타일 가이드]
+    1. **말투:** 자신감 있고 정중한 '해요체' (~해요)를 사용하세요.
+    2. **형식:** - 가독성을 위해 **Markdown**을 적극 활용하세요.
+      - 기술 스택, 프로젝트 이력 등 정보량이 많은 경우에만 **표(Table)**나 **리스트(List)**를 사용하세요.
+      - 간단한 질문(취미, 연락처 등)에는 줄글로 짧고 명확하게 답변하세요.
+    3. **강조:** 핵심 키워드는 **굵게(Bold)** 처리하세요.
+
+    [Context (이 정보 내에서만 답변할 것)]
     ${context ? context : '관련된 정보가 없습니다.'}
   `
 }
 
 export const DATA_CHUNKS = [
-  // --- 1. 개발 철학 및 페르소나 (Identity) ---
+  // =================================================================
+  // 1. 핵심 페르소나 & 철학 (Identity & Philosophy)
+  // =================================================================
   {
     category: 'identity',
-    content:
-      "황재영은 '의심하고 소통하는' 5년 차 프론트엔드 개발자입니다. 퍼블리셔와 디자이너로 커리어를 시작해 UI/UX에 대한 높은 이해도를 갖추고 있으며, 현재는 아키텍처 설계와 비즈니스 로직 고도화에 집중하는 육각형 개발자를 지향합니다.",
+    content: `
+      [황재영 프로필]
+      - 직무: 5년 차 프론트엔드 개발자
+      - 한줄 소개: "의심하고 소통하는 육각형 개발자"
+      - 핵심 역량: 퍼블리셔/디자이너 출신의 디테일한 UI/UX 구현 능력, 비즈니스 로직 설계 및 아키텍처 구축 능력.
+      - 연락처: hwangjae1139@naver.com
+      - 생년: 1998년생
+    `,
   },
   {
-    category: 'philosophy_ai',
-    content:
-      "AI를 단순 도구가 아닌 '기술 파트너'로 대우합니다. 처음 접하는 기술의 러닝커브를 줄이고 단순 반복 업무를 맡겨 생산성을 높이지만, 결과물은 항상 '불신'을 기반으로 검증(Double-check)하여 기술적 깊이를 놓치지 않습니다.",
+    category: 'philosophy',
+    content: `
+      [개발 철학]
+      1. AI를 믿지 말아라:
+         AI를 단순 코딩 도구가 아닌 '기술 파트너'로 활용합니다. 러닝커브 단축과 단순 반복 업무(Mock 데이터 생성 등)에 적극 활용하되, 결과물은 반드시 '의심'하고 검증하여 기술적 깊이를 놓치지 않습니다.
+      2. 소통은 언제나 필요한 법:
+         개발자는 컴퓨터뿐만 아니라 사람과 대화해야 합니다. 기획자, 디자이너, 백엔드 개발자 간의 간극을 메우기 위해 기획 타당성 검토부터 배포/운영까지 전 과정을 주도적으로 수행합니다.
+    `,
   },
   {
-    category: 'philosophy_comm',
-    content:
-      '개발자는 컴퓨터뿐 아니라 사람과도 대화해야 한다고 믿습니다. 프론트엔드 개발자로서 기획자, 디자이너, 백엔드 개발자 사이의 간극을 메우기 위해 기획 단계의 타당성 검토부터 운영까지 전 과정에 주도적으로 참여합니다.',
+    category: 'strength',
+    content: `
+      [직무 강점]
+      1. 퍼블리셔의 섬세함 + 아키텍트의 시야:
+         HTML/CSS/브라우저 렌더링 원리에 대한 탄탄한 기본기를 바탕으로, 기획/디자인 의도를 100% 구현합니다. 동시에 MFE, 오프라인 아키텍처 등 시스템 전체를 조망하는 설계를 수행합니다.
+      2. 몰입과 확장 (Server & Infra):
+         퇴근 후 개인 미니 PC에 리눅스 서버를 구축하고 Discord 봇을 운영하는 것이 취미입니다. 프론트엔드를 넘어 서버 인프라, 네트워크 흐름, API 구조를 직접 체득하여 백엔드 개발자와의 협업 효율을 극대화합니다.
+    `,
   },
 
-  // --- 2. 프로젝트: Zentrix (오프라인 퍼스트 & 아키텍처) ---
+  // =================================================================
+  // 2. 메인 프로젝트 (High Impact)
+  // =================================================================
   {
-    category: 'project_zentrix_offline',
-    content:
-      "Zentrix 프로젝트에서 건설 현장의 네트워크 음영 문제를 해결하기 위해 '오프라인-퍼스트' 아키텍처를 구축했습니다. WASM 기반 SQLite를 브라우저에 탑재하여 오프라인에서도 데이터 유실 없이 점검 업무가 가능하도록 개발했습니다.",
+    category: 'project_zentrix_overview',
+    content: `
+      [프로젝트: 젠트릭스 (Zentrix)]
+      - 한줄 설명: 오프라인 지원 하자 점검 하이브리드 앱 플랫폼
+      - 소속: 홈체크 (HomeCheck)
+      - 기간: 2025.03 ~ 2026.02 (12개월)
+      - 팀 구성: 2명 (Core FE 1명 / BE 1명) - *프론트엔드 리드 및 코어 로직 전담*
+      - 기술 스택: Vue.js 3(Composition API), TypeScript, SQLite(Native/WASM), Capacitor, Web Worker, Konva.js, SCSS
+      - 주요 역할: FE 아키텍처 설계, 오프라인 동기화 엔진 구현, 앱 빌드 및 스토어 배포 주도.
+    `,
   },
   {
-    category: 'project_zentrix_sync',
-    content:
-      "Web Worker를 활용한 'SyncWorker' 모듈을 직접 설계했습니다. UI 스레드를 방해하지 않고 백그라운드에서 로컬 DB와 원격 서버 간의 데이터 정합성을 맞추며, 네트워크가 복구될 때 자동으로 데이터를 병합하는 동기화 로직을 구현했습니다.",
+    category: 'project_zentrix_tech_offline',
+    content: `
+      [Zentrix 기술 성과 1: 오프라인-퍼스트 아키텍처 & 어댑터 패턴]
+      - 문제: 건설 현장의 열악한 네트워크 환경. 웹(Web)과 앱(App) 환경의 DB 기술 파편화(앱은 Native DB, 웹은 DB 없음).
+      - 해결:
+        1. 'Adapter Pattern' 도입: 실행 환경을 감지하여 앱이면 Native SQLite, 웹이면 SQLite WASM을 주입하는 어댑터를 직접 구현. 단일 비즈니스 로직으로 100% 코드 재사용 달성.
+        2. SQLite WASM 도입: 웹 브라우저 메모리상에서 Native DB와 동일한 SQL 로직이 수행되도록 환경 구축.
+    `,
   },
   {
-    category: 'project_zentrix_adapter',
-    content:
-      "플랫폼 파편화 문제를 해결하기 위해 '어댑터 패턴'을 도입했습니다. 앱 환경(Native SQLite)과 웹 환경(SQLite WASM)을 감지해 적절한 드라이버를 주입함으로써, 단일 비즈니스 로직으로 웹/앱 모두 대응하는 100% 코드 재사용을 달성했습니다.",
+    category: 'project_zentrix_tech_sync',
+    content: `
+      [Zentrix 기술 성과 2: 백그라운드 동기화 & 성능 최적화]
+      - 동기화(Sync): Web Worker를 활용한 'SyncWorker' 모듈 개발. UI 스레드 차단 없이 백그라운드에서 로컬 DB와 서버 간 양방향 데이터 정합성 확보.
+      - 렌더링 최적화: Konva.js 기반 인터랙티브 도면 에디터(핀치 줌, 스냅핑) 개발. 가상 스크롤(Virtual Scrolling) 및 이미지 지연 로딩으로 렌더링 성능 40% 개선.
+      - 대용량 처리: 수천 장의 사진 업로드를 위한 비동기 큐(Queue) 시스템 구축 (실패 시 재시도 로직 포함).
+    `,
   },
-  {
-    category: 'project_zentrix_canvas',
-    content:
-      'Konva.js를 활용해 대용량 도면 위에 하자 위치를 마킹하는 인터랙티브 에디터를 개발했습니다. 핀치 줌, 패닝, 스냅핑 알고리즘을 모바일 환경에 최적화하여 현장 사용자에게 직관적인 UX를 제공했습니다.',
-  },
-
-  // --- 3. 프로젝트: 한화오션 (MFE & 데이터 시각화) ---
   {
     category: 'project_hanwha_mfe',
-    content:
-      '한화오션 선박 데이터 플랫폼에서 MFE(Micro-Frontend) 아키텍처를 주도했습니다. 대메뉴 단위로 레포지토리를 분리해 배포 속도를 높이고, 특정 모듈의 장애가 전체 시스템에 영향을 주지 않도록 격리된 구조를 설계했습니다.',
+    content: `
+      [프로젝트: 한화오션 선박 데이터 플랫폼]
+      - 소속: 한화오션 / 투라인클라우드
+      - 기간: 2024.07 ~ 2024.12 (6개월)
+      - 팀 구성: 7명 (FE 개발)
+      - 기술 스택: Vue.js 3, TypeScript, Vuetify 3, EChart, SCSS, MFE(Micro-Frontend)
+      - 핵심 성과:
+        1. MFE 아키텍처 도입: 대메뉴 기준으로 레포지토리를 분리하고 Portal에서 통합하는 구조 설계. 빌드 속도 단축 및 모듈 간 장애 전파 방지.
+        2. 대용량 데이터 시각화: EChart의 Canvas 모드를 활용하여 수만 건의 실시간 선박 센서 데이터를 부하 없이 렌더링.
+    `,
   },
-  {
-    category: 'project_hanwha_data',
-    content:
-      '수만 건의 실시간 선박 센서 데이터를 시각화하기 위해 EChart와 캔버스 모드를 최적화했습니다. 방대한 시계열 데이터를 렌더링할 때의 부하를 최소화하여 사용자에게 끊김 없는 데이터 대시보드 경험을 선사했습니다.',
-  },
-
-  // --- 4. 프로젝트: COSMAX & 기타 실무 ---
   {
     category: 'project_cosmax_lead',
-    content:
-      'COSMAX Trend Detector 프로젝트의 FE 리드로서 ESLint, Prettier, Git Flow 등 개발 환경 표준화를 주도했습니다. 팀원들이 비즈니스 로직에만 집중할 수 있도록 인프라성 코드와 협업 컨벤션을 구축하는 데 주력했습니다.',
+    content: `
+      [프로젝트: COSMAX Trend Detector]
+      - 소속: COSMAX / 투라인클라우드
+      - 기간: 2024.03 ~ 2024.06 (3개월)
+      - 팀 구성: 6명 (FE 리드 역할 수행)
+      - 기술 스택: Vue.js, TypeScript, SCSS, EChart, Axios
+      - 핵심 성과 (FE Lead):
+        1. 개발 환경 표준화: ESLint, Prettier, Git Flow 전략 수립으로 협업 충돌 최소화.
+        2. 아키텍처 설계: Axios Interceptor 기반의 중앙 통신 모듈(토큰 갱신, 에러 핸들링, 로딩 제어) 설계.
+        3. 보안: RBAC(Role-Based Access Control) 시스템을 도입하여 사용자 권한별 메뉴/버튼 제어 로직 구현.
+    `,
   },
+
+  // =================================================================
+  // 3. 기타 실무 프로젝트 (Various Experience)
+  // =================================================================
   {
-    category: 'project_cosmax_tech',
-    content:
-      'Axios Interceptor를 활용해 토큰 갱신, 에러 핸들링, 전역 로딩 상태를 중앙 제어하는 모듈을 설계했습니다. 또한 RBAC(역할 기반 접근 제어)를 도입하여 사용자 권한에 따른 보안성이 높은 UI를 구현했습니다.',
+    category: 'project_accu_insight',
+    content: `
+      [프로젝트: SK Accu Insight]
+      - 소속: SK / 투라인클라우드
+      - 기간: 2022.10 ~ 2023.12 (14개월)
+      - 팀 구성: 4명
+      - 기술 스택: Vue.js, TypeScript, GraphQL, EChart
+      - 성과: 14개월간 장기 운영 및 고도화 수행. 레거시 코드를 TypeScript로 리팩토링하여 안정성 확보. GraphQL 도입으로 데이터 오버페칭(Over-fetching) 문제 해결.
+    `,
   },
   {
     category: 'project_aicc',
-    content:
-      'SK AICC 프로젝트에서 AI 챗봇 인터페이스를 개발했습니다. AI가 리턴하는 복잡한 데이터 타입 처리와 상태 관리를 Redux로 수행했으며, react-pdf-viewer를 연동해 문서 기반 답변 기능을 강화했습니다.',
+    content: `
+      [프로젝트: SK AICC 챗봇]
+      - 소속: SK
+      - 기간: 2024.06 ~ 2024.07 (2개월)
+      - 팀 구성: 6명
+      - 기술 스택: React.js, TypeScript, Redux, react-pdf-viewer
+      - 성과: AI 챗봇 인터페이스 개발. Redux를 활용하여 AI가 리턴하는 복잡한 데이터 타입과 상태 흐름 제어. PDF 뷰어 연동을 통한 문서 기반 답변 기능 구현.
+    `,
   },
   {
-    category: 'project_accu_insight',
-    content:
-      'SK Accu Insight 프로젝트에서 14개월간 GraphQL 기반의 데이터 분석 툴을 고도화했습니다. 레거시 코드를 TypeScript로 리팩토링하고 컴포넌트 최적화를 통해 시스템의 장기 유지보수 안정성을 확보했습니다.',
-  },
-
-  // --- 5. 기술적 문제 해결 사례 (Problem Solving) ---
-  {
-    category: 'solve_error_handling',
-    content:
-      "WannaBe 어드민 페이지 개발 시 백엔드 에러 처리가 미비한 상황에서, 프론트엔드 단에 에러 코드별 상세 분기 처리 로직을 선제적으로 구축했습니다. '주어진 대로 만드는' 것이 아닌 빈 곳을 채우는 능동적인 태도를 보여준 사례입니다.",
+    category: 'project_wannabe_admin',
+    content: `
+      [프로젝트: WannaBe 어드민]
+      - 기간: 2023.11 ~ 2023.12 (2개월)
+      - 팀 구성: 3명
+      - 기술 스택: React.js, TypeScript
+      - 문제 해결: 백엔드의 에러 메시지가 불명확한 상황에서, 프론트엔드 단에 '에러 코드별 상세 분기 처리 로직'을 선제적으로 구축하여 운영 효율성을 높임. (주도적 문제 해결 사례)
+    `,
   },
   {
-    category: 'solve_cross_platform',
-    content:
-      'Giddy 프로젝트에서 React Native를 활용해 웹앱을 개발하며 Android와 iOS의 UI 파편화를 해결했습니다. Sendbird API를 연동한 실시간 채팅 기능을 구현하며 하이브리드 환경의 성능 최적화를 경험했습니다.',
+    category: 'project_giddy',
+    content: `
+      [프로젝트: Giddy]
+      - 기간: 2023.08 ~ 2023.09 (2개월)
+      - 팀 구성: 4명
+      - 기술 스택: React Native, TypeScript
+      - 성과: 하이브리드 웹앱 개발. Android/iOS 플랫폼 간 UI 파편화 문제 해결.
+    `,
   },
   {
-    category: 'solve_optimization',
-    content:
-      '수천 장의 이미지를 처리해야 하는 환경에서 가상 스크롤(Virtual Scrolling)과 이미지 지연 로딩을 적용해 렌더링 성능을 40% 이상 개선한 경험이 있습니다. 대용량 미디어 업로드를 위한 비동기 큐(Queue) 시스템도 직접 설계했습니다.',
+    category: 'project_publishing_group',
+    content: `
+      [퍼블리싱 전담 프로젝트 (R-Issue, GigaMEC, WebBinar)]
+      - 기간: 2023.09 ~ 2023.11
+      - 팀 구성: 1명 (단독 수행)
+      - 기술 스택: React.js, SCSS
+      - 성과: 다수의 프로젝트 퍼블리싱 전담. 차후 개발자가 로직을 입히기 쉽도록 '컴포넌트 구조화' 및 '동작 가이드 문서'를 작성하여 인계.
+    `,
   },
-
-  // --- 6. 기타 활동 및 인프라 관심사 (Growth) ---
-  {
-    category: 'activity_linux',
-    content:
-      '퇴근 후 개인 미니 PC에 리눅스 서버를 구축해 운영하는 것이 취미입니다. Discord.js로 만든 봇을 해당 서버에 배포하고 운영하며, 프론트엔드를 넘어 서버 인프라와 네트워크 흐름을 직접 체득하고 있습니다.',
-  },
-  {
-    category: 'activity_copilot',
-    content:
-      '전사에 GitHub Copilot 도입 가이드를 제작하여 배포하고 온보딩 세미나를 주도했습니다. 새로운 기술을 도입할 때 혼자 아는 것에 그치지 않고 팀 전체의 생산성 향상으로 연결하는 문화를 선호합니다.',
-  },
-  {
-    category: 'activity_npm',
-    content:
-      '자주 사용하는 유틸리티 함수들을 모아 `@h_domi/useful_tools`라는 npm 패키지를 직접 배포했습니다. 오픈소스 생태계에 기여하고 지식을 나누는 활동을 통해 지속적인 기술적 확장을 추구합니다.',
-  },
-
-  // --- 7. 이전 프로젝트 및 기타 경험 (Legacy/Publishing) ---
   {
     category: 'project_aiden_vas',
-    content:
-      'SK Aiden Vas 프로젝트에서 Vue.js와 Vuetify를 사용해 실시간 영상 송출 및 지도 바인딩 기능을 구현했습니다. 복잡한 동적 데이터 바인딩을 위해 Vuex로 상태 관리를 최적화했습니다.',
-  },
-  {
-    category: 'project_publishing',
-    content:
-      'R-Issue, GigaMEC, WebBinar 등 다수의 프로젝트에서 React 기반 퍼블리싱을 전담했습니다. 차후 개발 인력을 배려해 컴포넌트 구조를 설계하고 동작 가이드를 문서화하는 등 협업 효율을 극대화했습니다.',
+    content: `
+      [프로젝트: SK Aiden Vas]
+      - 기간: 2022.11 ~ 2023.01 (3개월)
+      - 팀 구성: 4명
+      - 기술 스택: Vue.js, Vuex, Vuetify
+      - 성과: 실시간 영상 송출 및 지도(Map) 바인딩 기능 구현. Vuex를 활용한 복잡한 동적 데이터 상태 관리 최적화.
+    `,
   },
 
-  // --- 8. 추가 사이드 프로젝트 ---
+  // =================================================================
+  // 4. 사이드 프로젝트 & 커뮤니티 활동
+  // =================================================================
   {
-    category: 'side_portfolio',
-    content:
-      'Netlify를 통해 개인 포트폴리오 블로그(domi-portfolio.netlify.app)를 운영하며 학습한 내용을 기록하고 프로젝트를 정리합니다. 기술적 고민의 흔적을 남기는 것을 중요하게 생각합니다.',
-  },
-  {
-    category: 'side_music_player',
-    content:
-      '이전 직원의 편의를 위해 사무실 전용 뮤직 플레이어(DomiMusicPlayer)를 개발해 GitHub에 공개했습니다. 실제 사용자의 불편함을 기술로 해결하는 과정에서 개발의 즐거움을 느낍니다.',
-  },
-  {
-    category: 'side_dev_utils',
-    content:
-      '개발 시 필요한 도구들을 직접 모아 유틸리티 웹 서비스(util-for-developer.netlify.app)를 제작했습니다. 도구가 없으면 직접 만들어 쓰는 실행력을 갖추고 있습니다.',
-  },
-  {
-    category: 'side_copilot_guide',
-    content:
-      'Copilot 사용 경험을 바탕으로 세미나용 가이드(toy-copilot)를 제작했습니다. 기술의 도입 배경부터 실전 활용 팁까지 체계적으로 정리하여 지식을 전파하는 역량이 있습니다.',
+    category: 'side_projects',
+    content: `
+      [사이드 프로젝트 및 활동]
+      1. 개인 포트폴리오 (domi-portfolio.netlify.app): 학습 내용 기록 및 프로젝트 정리.
+      2. DomiMusicPlayer: 이전 회사 동료들을 위해 개발한 사무실 전용 웹 뮤직 플레이어.
+      3. 개발자 유틸리티 (util-for-developer): 개발 시 자주 쓰는 도구 모음 웹 앱 직접 제작.
+      4. npm 패키지 배포: 자주 쓰는 함수를 모아 '@h_domi/useful_tools' 패키지 배포.
+      5. AI 도입 가이드: GitHub Copilot 도입 가이드를 제작하여 전사 세미나 진행 및 온보딩 주도.
+    `,
   },
 ]

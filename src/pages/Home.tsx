@@ -7,7 +7,7 @@ const Home = () => {
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      <div className="flex flex-col w-full max-w-[700px] h-full relative z-10">
+      <div className="flex flex-col w-full max-w-[900px] h-full relative z-10">
         <ChatList
           messages={messages}
           isSearching={isSearching}
@@ -15,7 +15,11 @@ const Home = () => {
           onHyperMenuClick={sendMessage}
         />
 
-        <ChatInputArea onSend={sendMessage} isLoading={isGenerating || isSearching} />
+        <ChatInputArea
+          onSend={sendMessage}
+          isLoading={isGenerating || isSearching}
+          hasMessages={messages.length > 0}
+        />
       </div>
     </div>
   )

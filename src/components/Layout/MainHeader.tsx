@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import LOGO from '@p/images/facicon.png'
+import LOGO from '@p/images/domi_logo_w.svg'
 import ConfirmModal from '../UI/ConfirmModal'
 import { useChat } from '@/hooks/useChat'
 
