@@ -1,4 +1,3 @@
-// src/hooks/useRetriever.ts
 import { useState } from 'react'
 import { db } from '@/firebase' // firebase 설정 파일 import
 import { collection, getDocs } from 'firebase/firestore'

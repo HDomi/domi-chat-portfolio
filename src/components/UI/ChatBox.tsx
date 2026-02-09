@@ -1,8 +1,7 @@
 // src/components/ChatBot.tsx
 import React, { useState, useRef, useEffect } from 'react'
 import { GoogleGenerativeAI } from '@google/generative-ai'
-import { useRetriever } from '../hooks/useRetriever'
-import { ChatMessage } from '../types'
+import { useRetriever } from '@/hooks/useRetriever'
 
 // 대화 생성 모델은 1.5-flash나 2.0-flash 사용 (속도/성능 고려)
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY as string)
@@ -10,7 +9,7 @@ const chatModel = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
 
 const ChatBot: React.FC = () => {
   const [input, setInput] = useState<string>('')
-  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [messages, setMessages] = useState<IChatMessage[]>([])
   const [isGenerating, setIsGenerating] = useState<boolean>(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -24,7 +23,7 @@ const ChatBot: React.FC = () => {
   const handleSend = async () => {
     if (!input.trim() || isGenerating) return
 
-    const userMessage: ChatMessage = { role: 'user', text: input }
+    const userMessage: IChatMessage = { role: 'user', text: input }
     setMessages(prev => [...prev, userMessage])
     setInput('')
     setIsGenerating(true)
