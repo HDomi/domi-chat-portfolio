@@ -1,5 +1,6 @@
 import React, { useState, type ReactNode } from 'react'
 import { GoogleGenerativeAI } from '@google/generative-ai'
+import { useRateLimiter } from '@/hooks/useRateLimiter'
 import { useRetriever } from '@/hooks/useRetriever'
 import { getPrompt } from '@/constant'
 import { ChatContext } from '@/hooks/useChat'
@@ -12,8 +13,15 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [messages, setMessages] = useState<IChatMessage[]>([])
   const [isGenerating, setIsGenerating] = useState(false)
   const { retrieveContext, loading: isSearching } = useRetriever()
+  const { isLimited, remaining, incrementCount } = useRateLimiter()
 
   const sendMessage = async (input: string) => {
+    // 1. 제한 체크
+    if (isLimited) {
+      alert('죄송합니다. 1일 질문 한도(20회)를 초과했습니다.\n내일 다시 방문해 주세요! 😭')
+      return
+    }
+
     if (!input.trim() || isGenerating) return
 
     const userMessage: IChatMessage = { role: 'user', text: input }
@@ -21,13 +29,20 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsGenerating(true)
 
     try {
-      // 1. RAG: 검색
+      // 2. 카운트 증가
+      const success = incrementCount()
+      if (!success) {
+        setIsGenerating(false)
+        return
+      }
+
+      // 3. RAG: 검색
       const context = await retrieveContext(userMessage.text)
 
-      // 2. System Prompt 생성
+      // 4. System Prompt 생성
       const systemPrompt = getPrompt(context)
 
-      // 3. 답변 생성
+      // 5. 답변 생성
       const result = await chatModel.generateContent([systemPrompt, `질문: ${userMessage.text}`])
       const response = await result.response
       const text = response.text()
@@ -53,7 +68,17 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }
 
   return (
-    <ChatContext.Provider value={{ messages, isGenerating, isSearching, sendMessage, resetChat }}>
+    <ChatContext.Provider
+      value={{
+        messages,
+        isGenerating,
+        isSearching,
+        sendMessage,
+        resetChat,
+        isLimited,
+        remaining,
+      }}
+    >
       {children}
     </ChatContext.Provider>
   )

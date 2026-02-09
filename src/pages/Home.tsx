@@ -3,7 +3,8 @@ import ChatList from '../components/UI/ChatList'
 import ChatInputArea from '../components/UI/ChatInputArea'
 
 const Home = () => {
-  const { messages, isGenerating, isSearching, sendMessage } = useChat()
+  const { messages, isGenerating, isSearching, sendMessage, isLimited, remaining } = useChat()
+  const hasMessages = messages.length > 0
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center p-4 relative overflow-hidden">
@@ -18,7 +19,9 @@ const Home = () => {
         <ChatInputArea
           onSend={sendMessage}
           isLoading={isGenerating || isSearching}
-          hasMessages={messages.length > 0}
+          hasMessages={hasMessages}
+          isLimited={isLimited}
+          remaining={remaining}
         />
       </div>
     </div>

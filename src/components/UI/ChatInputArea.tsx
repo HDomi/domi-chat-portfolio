@@ -5,14 +5,22 @@ interface ChatInputAreaProps {
   onSend: (message: string) => void
   isLoading: boolean
   hasMessages: boolean
+  isLimited?: boolean
+  remaining?: number
 }
 
-const ChatInputArea = ({ onSend, isLoading, hasMessages }: ChatInputAreaProps) => {
+const ChatInputArea = ({
+  onSend,
+  isLoading,
+  hasMessages,
+  isLimited = false,
+  remaining,
+}: ChatInputAreaProps) => {
   const [input, setInput] = useState('')
   const [shouldShowSuggestions, setShouldShowSuggestions] = useState(false)
 
   const handleSend = () => {
-    if (!input.trim() || isLoading) return
+    if (!input.trim() || isLoading || isLimited) return
     onSend(input)
     setInput('')
   }
@@ -24,10 +32,14 @@ const ChatInputArea = ({ onSend, isLoading, hasMessages }: ChatInputAreaProps) =
     }
   }
 
+  const placeholderText = isLimited
+    ? '일일 질문 한도를 초과했습니다.'
+    : `무엇이든 물어보세요... ${remaining !== undefined ? `(남은 횟수: ${remaining}회)` : ''}`
+
   return (
     <div className="w-full relative shrink-0 flex flex-col items-center justify-center">
       {/* Suggestions (Visible only when focused & has messages) */}
-      {shouldShowSuggestions && (
+      {shouldShowSuggestions && !isLimited && (
         <div className="w-full max-w-[700px] mb-3 animate-fade-in-up">
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mask-fade-right">
             {HYPER_MENU_ITEMS.map(item => (
@@ -46,8 +58,8 @@ const ChatInputArea = ({ onSend, isLoading, hasMessages }: ChatInputAreaProps) =
 
       <div className="flex max-w-[700px] flex-col w-full p-3 md:p-4 backdrop-blur-xl bg-[#1e1f20]/90 border border-gray-700/50 rounded-[20px] md:rounded-[24px] shadow-2xl transition-all duration-300 focus-within:border-gray-600 focus-within:ring-1 focus-within:ring-gray-600/50 relative z-20">
         <textarea
-          className="w-full bg-transparent resize-none outline-none text-white placeholder-gray-500 min-h-[44px] md:min-h-[50px] max-h-[120px] scrollbar-thin scrollbar-thumb-gray-600 text-sm md:text-base"
-          placeholder="무엇이든 물어보세요..."
+          className="w-full bg-transparent resize-none outline-none text-white placeholder-gray-500 min-h-[44px] md:min-h-[50px] max-h-[120px] scrollbar-thin scrollbar-thumb-gray-600 text-sm md:text-base disabled:text-gray-500 disabled:cursor-not-allowed"
+          placeholder={placeholderText}
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -57,7 +69,7 @@ const ChatInputArea = ({ onSend, isLoading, hasMessages }: ChatInputAreaProps) =
           onBlur={() => {
             setTimeout(() => setShouldShowSuggestions(false), 200)
           }}
-          disabled={isLoading}
+          disabled={isLoading || isLimited}
         />
         <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-800">
           <span className="text-[10px] md:text-xs text-gray-500 font-medium ml-1">
@@ -65,9 +77,9 @@ const ChatInputArea = ({ onSend, isLoading, hasMessages }: ChatInputAreaProps) =
           </span>
           <button
             onClick={handleSend}
-            disabled={!input.trim() || isLoading}
+            disabled={!input.trim() || isLoading || isLimited}
             className={`flex items-center justify-center px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 ${
-              !input.trim() || isLoading
+              !input.trim() || isLoading || isLimited
                 ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20 active:scale-95'
             }`}

@@ -1,34 +1,46 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 const MAX_DAILY_REQUESTS = 20 // 하루 최대 질문 횟수
 
 export const useRateLimiter = () => {
-  const [isLimited, setIsLimited] = useState(false)
-  const [remaining, setRemaining] = useState(MAX_DAILY_REQUESTS)
-
-  const checkLimit = () => {
+  // 현재 상태를 계산하는 헬퍼 함수
+  const getLimitStatus = () => {
+    if (typeof window === 'undefined') {
+      return { count: 0, storageKey: '' }
+    }
     const today = new Date().toISOString().split('T')[0] // YYYY-MM-DD
     const storageKey = `chat_limit_${today}`
-
     const currentCount = parseInt(localStorage.getItem(storageKey) || '0', 10)
-    const remainingCount = Math.max(0, MAX_DAILY_REQUESTS - currentCount)
 
-    setRemaining(remainingCount)
-    setIsLimited(currentCount >= MAX_DAILY_REQUESTS)
+    return { count: currentCount, storageKey }
   }
 
-  useEffect(() => {
-    checkLimit()
-  }, [])
+  const [isLimited, setIsLimited] = useState(() => {
+    const { count } = getLimitStatus()
+    return count >= MAX_DAILY_REQUESTS
+  })
+
+  const [remaining, setRemaining] = useState(() => {
+    const { count } = getLimitStatus()
+    return Math.max(0, MAX_DAILY_REQUESTS - count)
+  })
+
+  const checkLimit = () => {
+    const { count } = getLimitStatus()
+    const remainingCount = Math.max(0, MAX_DAILY_REQUESTS - count)
+
+    setRemaining(remainingCount)
+    setIsLimited(count >= MAX_DAILY_REQUESTS)
+  }
 
   const incrementCount = () => {
-    const today = new Date().toISOString().split('T')[0]
-    const storageKey = `chat_limit_${today}`
-    const currentCount = parseInt(localStorage.getItem(storageKey) || '0', 10)
+    const { count, storageKey } = getLimitStatus()
 
-    if (currentCount < MAX_DAILY_REQUESTS) {
-      const newCount = currentCount + 1
-      localStorage.setItem(storageKey, newCount.toString())
+    if (count < MAX_DAILY_REQUESTS) {
+      const newCount = count + 1
+      if (storageKey) {
+        localStorage.setItem(storageKey, newCount.toString())
+      }
       checkLimit() // 상태 업데이트
       return true // Count successfully incremented
     }
