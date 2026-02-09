@@ -52,6 +52,20 @@ Google Gemini의 LLM과 Embedding 모델을 활용한 **RAG (Retrieval-Augmented
 3. **Context Injection**: 추출된 문서를 시스템 프롬프트에 주입.
 4. **Answer Generation**: 완성된 프롬프트(`System Prompt + Context + User Question`)를 **Gemini LLM**에 전송하여 답변 생성.
 
+### **3. 사용량 제한 (Usage Limiting)**
+
+> **관련 파일**: `src/hooks/useAuthLimiter.ts`
+
+비용 관리 및 남용 방지를 위해 **일일 질문 횟수 제한(Rate Limiting)** 기능을 구현했습니다.
+
+1. **Anonymous Authentication**:
+   - 별도의 회원가입 절차 없이 `Firebase Anonymous Auth`를 통해 사용자를 식별(`uid`)합니다.
+2. **Firestore Transaction**:
+   - 동시성 제어를 위해 **Firestore Transaction**을 사용하여 조회수 카운팅의 정합성을 보장합니다.
+   - `daily_limits/{YYYY-MM-DD}/users/{uid}` 경로에 문서를 생성하여 날짜별로 카운트가 관리됩니다.
+3. **Daily Limit Policy**:
+   - 하루 최대 **20회**의 질문이 가능하며, 초과 시 `isLimited` 상태가 되어 질문이 차단됩니다.
+
 ---
 
 ## 📂 폴더 구조 (Directory Structure)
@@ -65,6 +79,7 @@ src/
 ├── context/          # 전역 상태 관리 (ChatContext - 메시지 및 API 호출 상태)
 ├── firebase/         # Firebase 클라이언트 설정 (config.ts)
 ├── hooks/            # 커스텀 훅
+│   ├── useAuthLimiter.ts # 일일 사용량 제한 로직 (Firebase Auth & Trx)
 │   ├── useChat.ts      # ChatContext 소비 훅
 │   └── useRetriever.ts # RAG 검색 및 유사도 계산 로직
 ├── pages/            # 페이지 단위 컴포넌트 (Home)

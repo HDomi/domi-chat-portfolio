@@ -73,7 +73,7 @@ const ChatInputArea = ({
         />
         <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-800">
           <span className="text-[10px] md:text-xs text-gray-500 font-medium ml-1">
-            Powered by Gemini 1.5
+            Powered by Gemini 2.0 Flash Lite
           </span>
           <button
             onClick={handleSend}

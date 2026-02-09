@@ -42,6 +42,7 @@ export const getPrompt = (context?: string) => {
     7. 답변은 일부 고유명사, 기술스택등을 제외하고 **한국어**로만 해야 합니다.
     8. "5년차 개발자"라는 말은 안붙여도 됩니다.
     9. 강조 표시를 할때, 뒷 배경이 어두우니(회색/검은색계열), 파란색, 초록색등은 사용하지 않습니다.
+    10. 프로젝트 이력 나열 시 **이미지**를 포함하여 설명해 주세요.
 
     [답변 스타일 가이드]
     1. **말투:** 자신감 있고 정중한 '해요체' (~해요)를 사용하세요.
@@ -106,6 +107,7 @@ export const DATA_CHUNKS = [
       [프로젝트: 젠트릭스 (Zentrix)]
       - 한줄 설명: 오프라인 지원 하자 점검 하이브리드 앱 플랫폼
       - 소속: 홈체크 (HomeCheck)
+      - 이미지: https://github.com/HDomi/image-temp/blob/main/zentrix.png?raw=true
       - 기간: 2025.03 ~ 2026.02 (12개월)
       - 팀 구성: 2명 (Core FE 1명 / BE 1명) - *프론트엔드 리드 및 코어 로직 전담*
       - 기술 스택: Vue.js 3(Composition API), TypeScript, SQLite(Native/WASM), Capacitor, Web Worker, Konva.js, SCSS
@@ -117,6 +119,7 @@ export const DATA_CHUNKS = [
     content: `
       [Zentrix 기술 성과 1: 오프라인-퍼스트 아키텍처 & 어댑터 패턴]
       - 문제: 건설 현장의 열악한 네트워크 환경. 웹(Web)과 앱(App) 환경의 DB 기술 파편화(앱은 Native DB, 웹은 DB 없음).
+      - 이미지: https://github.com/HDomi/image-temp/blob/main/zentrix2.png?raw=true
       - 해결:
         1. 'Adapter Pattern' 도입: 실행 환경을 감지하여 앱이면 Native SQLite, 웹이면 SQLite WASM을 주입하는 어댑터를 직접 구현. 단일 비즈니스 로직으로 100% 코드 재사용 달성.
         2. SQLite WASM 도입: 웹 브라우저 메모리상에서 Native DB와 동일한 SQL 로직이 수행되도록 환경 구축.
@@ -138,6 +141,7 @@ export const DATA_CHUNKS = [
       - 소속: 한화오션 / 투라인클라우드
       - 기간: 2024.07 ~ 2024.12 (6개월)
       - 팀 구성: 7명 (FE 개발)
+      - 이미지: 보안상 없음.
       - 기술 스택: Vue.js 3, TypeScript, Vuetify 3, EChart, SCSS, MFE(Micro-Frontend)
       - 핵심 성과:
         1. MFE 아키텍처 도입: 대메뉴 기준으로 레포지토리를 분리하고 Portal에서 통합하는 구조 설계. 빌드 속도 단축 및 모듈 간 장애 전파 방지.
@@ -151,6 +155,7 @@ export const DATA_CHUNKS = [
       - 소속: COSMAX / 투라인클라우드
       - 기간: 2024.03 ~ 2024.06 (3개월)
       - 팀 구성: 6명 (FE 리드 역할 수행)
+      - 이미지: 보안상 없음.
       - 기술 스택: Vue.js, TypeScript, SCSS, EChart, Axios
       - 핵심 성과 (FE Lead):
         1. 개발 환경 표준화: ESLint, Prettier, Git Flow 전략 수립으로 협업 충돌 최소화.
@@ -168,6 +173,7 @@ export const DATA_CHUNKS = [
       [프로젝트: SK Accu Insight]
       - 소속: SK / 투라인클라우드
       - 기간: 2022.10 ~ 2023.12 (14개월)
+      - 이미지: https://github.com/HDomi/image-temp/blob/main/works-accu.png?raw=true
       - 팀 구성: 4명
       - 기술 스택: Vue.js, TypeScript, GraphQL, EChart
       - 성과: 14개월간 장기 운영 및 고도화 수행. 레거시 코드를 TypeScript로 리팩토링하여 안정성 확보. GraphQL 도입으로 데이터 오버페칭(Over-fetching) 문제 해결.
@@ -179,6 +185,7 @@ export const DATA_CHUNKS = [
       [프로젝트: SK AICC 챗봇]
       - 소속: SK
       - 기간: 2024.06 ~ 2024.07 (2개월)
+      - 이미지: 보안상 없음.
       - 팀 구성: 6명
       - 기술 스택: React.js, TypeScript, Redux, react-pdf-viewer
       - 성과: AI 챗봇 인터페이스 개발. Redux를 활용하여 AI가 리턴하는 복잡한 데이터 타입과 상태 흐름 제어. PDF 뷰어 연동을 통한 문서 기반 답변 기능 구현.
@@ -189,6 +196,7 @@ export const DATA_CHUNKS = [
     content: `
       [프로젝트: WannaBe 어드민]
       - 기간: 2023.11 ~ 2023.12 (2개월)
+      - 이미지: https://github.com/HDomi/image-temp/blob/main/works-wannabe-ad3.png?raw=true
       - 팀 구성: 3명
       - 기술 스택: React.js, TypeScript
       - 문제 해결: 백엔드의 에러 메시지가 불명확한 상황에서, 프론트엔드 단에 '에러 코드별 상세 분기 처리 로직'을 선제적으로 구축하여 운영 효율성을 높임. (주도적 문제 해결 사례)
@@ -199,6 +207,7 @@ export const DATA_CHUNKS = [
     content: `
       [프로젝트: Giddy]
       - 기간: 2023.08 ~ 2023.09 (2개월)
+      - 이미지: https://github.com/HDomi/image-temp/blob/main/works-giddy2.png?raw=true
       - 팀 구성: 4명
       - 기술 스택: React Native, TypeScript
       - 성과: 하이브리드 웹앱 개발. Android/iOS 플랫폼 간 UI 파편화 문제 해결.
@@ -209,6 +218,7 @@ export const DATA_CHUNKS = [
     content: `
       [퍼블리싱 전담 프로젝트 (R-Issue, GigaMEC, WebBinar)]
       - 기간: 2023.09 ~ 2023.11
+      - 이미지: https://github.com/HDomi/image-temp/blob/main/works-gigamec.png?raw=true
       - 팀 구성: 1명 (단독 수행)
       - 기술 스택: React.js, SCSS
       - 성과: 다수의 프로젝트 퍼블리싱 전담. 차후 개발자가 로직을 입히기 쉽도록 '컴포넌트 구조화' 및 '동작 가이드 문서'를 작성하여 인계.
@@ -219,6 +229,7 @@ export const DATA_CHUNKS = [
     content: `
       [프로젝트: SK Aiden Vas]
       - 기간: 2022.11 ~ 2023.01 (3개월)
+      - 이미지: https://github.com/HDomi/image-temp/blob/main/works-vas2.png?raw=true
       - 팀 구성: 4명
       - 기술 스택: Vue.js, Vuex, Vuetify
       - 성과: 실시간 영상 송출 및 지도(Map) 바인딩 기능 구현. Vuex를 활용한 복잡한 동적 데이터 상태 관리 최적화.
@@ -234,9 +245,12 @@ export const DATA_CHUNKS = [
       [사이드 프로젝트 및 활동]
       1. 개인 포트폴리오 (domi-portfolio.netlify.app): 학습 내용 기록 및 프로젝트 정리.
       2. DomiMusicPlayer: 이전 회사 동료들을 위해 개발한 사무실 전용 웹 뮤직 플레이어.
+      2-1. 이미지: https://github.com/HDomi/image-temp/blob/main/toy-music-player.png?raw=true
       3. 개발자 유틸리티 (util-for-developer): 개발 시 자주 쓰는 도구 모음 웹 앱 직접 제작.
+      3-1. 이미지: https://github.com/HDomi/image-temp/blob/main/toy-utils.png?raw=true
       4. npm 패키지 배포: 자주 쓰는 함수를 모아 '@h_domi/useful_tools' 패키지 배포.
       5. AI 도입 가이드: GitHub Copilot 도입 가이드를 제작하여 전사 세미나 진행 및 온보딩 주도.
+      5-1. 이미지: https://github.com/HDomi/image-temp/blob/main/toy-copilot.png?raw=true
     `,
   },
 ]

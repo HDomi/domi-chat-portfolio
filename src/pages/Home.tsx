@@ -1,6 +1,6 @@
 import { useChat } from '@/hooks/useChat'
-import ChatList from '../components/UI/ChatList'
-import ChatInputArea from '../components/UI/ChatInputArea'
+import ChatList from '@/components/UI/ChatList'
+import ChatInputArea from '@/components/UI/ChatInputArea'
 
 const Home = () => {
   const { messages, isGenerating, isSearching, sendMessage, isLimited, remaining } = useChat()
