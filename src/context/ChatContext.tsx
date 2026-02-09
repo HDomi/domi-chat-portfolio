@@ -1,9 +1,10 @@
-import React, { useState, type ReactNode } from 'react'
+import React, { useState, type ReactNode, useEffect } from 'react'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { useAuthLimiter } from '@/hooks/useAuthLimiter'
 import { useRetriever } from '@/hooks/useRetriever'
 import { getPrompt } from '@/constant'
 import { ChatContext } from '@/hooks/useChat'
+import ReactGA from 'react-ga4'
 
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY as string)
@@ -15,6 +16,13 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const { retrieveContext, loading: isSearching } = useRetriever()
   const { isLimited, remaining, incrementCount } = useAuthLimiter()
 
+  // Track page view on mount
+  useEffect(() => {
+    if (import.meta.env.VITE_GOOGLE_ANALYTICS_ID) {
+      ReactGA.send({ hitType: 'pageview', page: window.location.pathname })
+    }
+  }, [])
+
   const sendMessage = async (input: string) => {
     // 1. 제한 체크
     if (isLimited) {
@@ -23,6 +31,15 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
 
     if (!input.trim() || isGenerating) return
+
+    // Track user question
+    if (import.meta.env.VITE_GOOGLE_ANALYTICS_ID) {
+      ReactGA.event({
+        category: 'Chat',
+        action: 'User Question',
+        label: input.substring(0, 100), // Limit label length
+      })
+    }
 
     const userMessage: IChatMessage = { role: 'user', text: input }
     setMessages(prev => [...prev, userMessage])
