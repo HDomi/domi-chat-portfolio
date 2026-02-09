@@ -34,7 +34,7 @@ const ChatInputArea = ({
 
   const placeholderText = isLimited
     ? '일일 질문 한도를 초과했습니다.'
-    : `무엇이든 물어보세요... ${remaining !== undefined ? `(남은 횟수: ${remaining}회)` : ''}`
+    : `무엇이든 물어보세요... ${remaining !== undefined ? `(금일 남은 횟수: ${remaining}회)` : ''}`
 
   return (
     <div className="w-full relative shrink-0 flex flex-col items-center justify-center">
