@@ -35,7 +35,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           // 2. 링크 스타일링
           a: props => (
             <a
-              className="text-blue-400 hover:underline"
+              className="text-yellow-400 hover:underline"
               target="_blank"
               rel="noopener noreferrer"
               {...props}

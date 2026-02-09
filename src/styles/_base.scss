@@ -74,6 +74,7 @@ body {
 ul,
 li {
   list-style: none;
+  color: #fff !important;
 }
 a {
   color: #fff;
@@ -86,7 +87,7 @@ textarea {
   outline: none;
   border: none;
   &::placeholder {
-    color: #5d5d5d;
+    color: #757575;
   }
   &:focus {
     outline: none;
