@@ -2,7 +2,7 @@
   "name": "domi-chat-portfolio",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://domi.github.io/domi-chat-portfolio",
+  "homepage": "https://domi-chat-portfolio.vercel.app/",
   "type": "module",
   "scripts": {
     "dev": "vite",

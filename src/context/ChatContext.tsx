@@ -1,6 +1,6 @@
 import React, { useState, type ReactNode } from 'react'
 import { GoogleGenerativeAI } from '@google/generative-ai'
-import { useRateLimiter } from '@/hooks/useRateLimiter'
+import { useAuthLimiter } from '@/hooks/useAuthLimiter'
 import { useRetriever } from '@/hooks/useRetriever'
 import { getPrompt } from '@/constant'
 import { ChatContext } from '@/hooks/useChat'
@@ -13,7 +13,7 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [messages, setMessages] = useState<IChatMessage[]>([])
   const [isGenerating, setIsGenerating] = useState(false)
   const { retrieveContext, loading: isSearching } = useRetriever()
-  const { isLimited, remaining, incrementCount } = useRateLimiter()
+  const { isLimited, remaining, incrementCount } = useAuthLimiter()
 
   const sendMessage = async (input: string) => {
     // 1. 제한 체크
@@ -30,7 +30,7 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     try {
       // 2. 카운트 증가
-      const success = incrementCount()
+      const success = await incrementCount()
       if (!success) {
         setIsGenerating(false)
         return
