@@ -61,3 +61,7 @@ node_modules/
 # Android Release 서명 키
 android/keystore.properties
 android/app/zentrix-release-key.keystore
+
+upload-resume.mjs
+serviceAccount.json
+models.json
