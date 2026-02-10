@@ -2,7 +2,13 @@ import { useRef, useEffect } from 'react'
 import { HYPER_MENU_ITEMS } from '@/constant'
 import MarkdownRenderer from '../MarkdownRenderer'
 
-const ChatList = ({ messages, isSearching, isGenerating, onHyperMenuClick }: IChatListProps) => {
+const ChatList = ({
+  messages,
+  isSearching,
+  isGenerating,
+  onHyperMenuClick,
+  currentModel,
+}: IChatListProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -48,7 +54,7 @@ const ChatList = ({ messages, isSearching, isGenerating, onHyperMenuClick }: ICh
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
             >
               <div
-                className={`max-w-[85%] px-4 py-2.5 md:px-5 md:py-3.5 text-sm md:text-base leading-relaxed break-words shadow-md ${
+                className={`max-w-[85%] px-4 py-2.5 md:px-5 md:py-3.5 text-sm md:text-base leading-relaxed wrap-break-word shadow-md ${
                   msg.role === 'user'
                     ? 'bg-blue-600 text-white rounded-2xl rounded-tr-md'
                     : 'bg-[#2a2b2e] text-gray-100 border border-gray-700 rounded-2xl rounded-tl-md'
@@ -63,7 +69,11 @@ const ChatList = ({ messages, isSearching, isGenerating, onHyperMenuClick }: ICh
             <div className="flex justify-start animate-pulse">
               <div className="bg-[#2a2b2e] px-4 py-2 rounded-2xl text-xs text-gray-400 border border-gray-700 flex items-center gap-2">
                 <span className="inline-block w-2 h-2 bg-blue-500 rounded-full animate-bounce"></span>
-                {isSearching ? '이력서 데이터를 검색하는 중...' : '답변을 생성하는 중...'}
+                {isSearching
+                  ? '이력서 데이터를 검색하는 중...'
+                  : currentModel === 'Local'
+                    ? '답변을 생성하는 중... 로컬 모델은 답변이 늦을 수 있습니다...'
+                    : '답변을 생성하는 중...'}
               </div>
             </div>
           )}

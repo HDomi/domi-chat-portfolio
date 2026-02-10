@@ -1,20 +1,19 @@
 import React, { useState, type ReactNode, useEffect } from 'react'
-import { GoogleGenerativeAI } from '@google/generative-ai'
-import { useAuthLimiter } from '@/hooks/useAuthLimiter'
-import { useRetriever } from '@/hooks/useRetriever'
-import { getPrompt } from '@/constant'
-import { ChatContext } from '@/hooks/useChat'
 import ReactGA from 'react-ga4'
 
-// Initialize Gemini
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY as string)
-const chatModel = genAI.getGenerativeModel({ model: 'models/gemini-2.0-flash-lite' })
+import { useAuthLimiter, DAILY_LIMIT } from '@/hooks/useAuthLimiter'
+import { useRetriever } from '@/hooks/useRetriever'
+import { useChatModel } from '@/hooks/useChatModel'
+import { ChatContext } from '@/hooks/useChat'
 
 export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [messages, setMessages] = useState<IChatMessage[]>([])
   const [isGenerating, setIsGenerating] = useState(false)
   const { retrieveContext, loading: isSearching } = useRetriever()
-  const { isLimited, remaining, incrementCount } = useAuthLimiter()
+
+  // count를 useChatModel 호출 시 사용
+  const { isLimited, remaining, incrementCount, count } = useAuthLimiter()
+  const { currentModel, generateResponse, stopGeneration } = useChatModel()
 
   // Track page view on mount
   useEffect(() => {
@@ -24,12 +23,8 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [])
 
   const sendMessage = async (input: string) => {
-    // 1. 제한 체크
-    if (isLimited) {
-      alert('죄송합니다. 1일 질문 한도(20회)를 초과했습니다.\n내일 다시 방문해 주세요! 😭')
-      return
-    }
-
+    // NOTE: 하이브리드 모델이므로 제한 체크(isLimited)를 해서 막지 않음.
+    // 대신 count 체크를 통해 모델을 스위칭함.
     if (!input.trim() || isGenerating) return
 
     // Track user question
@@ -46,25 +41,40 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsGenerating(true)
 
     try {
-      // 2. 카운트 증가
-      const success = await incrementCount()
-      if (!success) {
-        setIsGenerating(false)
-        return
+      // 1. 카운트 증가 (Gemini 쿼터 내일 경우에만 증가)
+      // 이미 10회 이상이면, LocalModel 쓰므로 카운트를 증가시키지 않음 (혹은 통계용으로 별도 처리 가능하지만 일단 유지)
+      if (count < DAILY_LIMIT) {
+        await incrementCount()
       }
-
-      // 3. RAG: 검색
+      // 2. RAG: 검색
       const context = await retrieveContext(userMessage.text)
 
-      // 4. System Prompt 생성
-      const systemPrompt = getPrompt(context)
+      // 3. 모델 답변 생성 (Gemini <-> LocalModel 자동 스위칭)
+      // 빈 말풍선 추가
+      setMessages(prev => [...prev, { role: 'model', text: '' }])
 
-      // 5. 답변 생성
-      const result = await chatModel.generateContent([systemPrompt, `질문: ${userMessage.text}`])
-      const response = await result.response
-      const text = response.text()
-
-      setMessages(prev => [...prev, { role: 'model', text }])
+      await generateResponse(userMessage.text, context, count, DAILY_LIMIT, (text, done) => {
+        if (text) {
+          setMessages(prev => {
+            const newMsgs = [...prev]
+            const lastMsg = { ...newMsgs[newMsgs.length - 1] }
+            if (lastMsg.role === 'model') {
+              // 스트리밍 텍스트 누적
+              // Note: useChatModel에서 이미 누적된 텍스트가 아닌 chunk를 준다면 여기서 누적해야 함.
+              // 현재 useChatModel 구현:
+              // Gemini: chunk.text() (부분 텍스트)
+              // LocalModel: json.response (부분 텍스트)
+              // 따라서 누적(+=) 해야 함.
+              lastMsg.text += text
+              newMsgs[newMsgs.length - 1] = lastMsg
+            }
+            return newMsgs
+          })
+        }
+        if (done) {
+          setIsGenerating(false)
+        }
+      })
     } catch (error) {
       console.error('Chat Error:', error)
       setMessages(prev => [
@@ -74,7 +84,6 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           text: '죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
         },
       ])
-    } finally {
       setIsGenerating(false)
     }
   }
@@ -92,8 +101,10 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         isSearching,
         sendMessage,
         resetChat,
-        isLimited,
+        isLimited, // Gemini Limit reached 여부
         remaining,
+        currentModel,
+        stopGeneration,
       }}
     >
       {children}

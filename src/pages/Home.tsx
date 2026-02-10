@@ -3,7 +3,16 @@ import ChatList from '@/components/UI/ChatList'
 import ChatInputArea from '@/components/UI/ChatInputArea'
 
 const Home = () => {
-  const { messages, isGenerating, isSearching, sendMessage, isLimited, remaining } = useChat()
+  const {
+    messages,
+    isGenerating,
+    isSearching,
+    sendMessage,
+    isLimited,
+    remaining,
+    currentModel,
+    stopGeneration,
+  } = useChat()
   const hasMessages = messages.length > 0
 
   return (
@@ -14,6 +23,7 @@ const Home = () => {
           isSearching={isSearching}
           isGenerating={isGenerating}
           onHyperMenuClick={sendMessage}
+          currentModel={currentModel}
         />
 
         <ChatInputArea
@@ -22,6 +32,8 @@ const Home = () => {
           hasMessages={hasMessages}
           isLimited={isLimited}
           remaining={remaining}
+          currentModel={currentModel}
+          onStop={stopGeneration}
         />
       </div>
     </div>

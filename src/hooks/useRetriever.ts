@@ -3,6 +3,7 @@ import { db } from '@/firebase' // firebase 설정 파일 import
 import { collection, getDocs } from 'firebase/firestore'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { cosineSimilarity } from '@/utils'
+import { getModelInfo } from '@/constant'
 
 // 환경변수 타입 단언
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY as string
@@ -12,7 +13,7 @@ export const useRetriever = () => {
   const [loading, setLoading] = useState<boolean>(false)
 
   const embeddingModel = genAI.getGenerativeModel({
-    model: 'models/gemini-embedding-001',
+    model: getModelInfo('Gemini_Imbedding', 'callPath'),
   })
 
   const retrieveContext = async (query: string): Promise<string> => {
@@ -37,12 +38,12 @@ export const useRetriever = () => {
         score: cosineSimilarity(queryEmbedding, chunk.embedding),
       }))
 
-      // 4. 유사도 정렬 및 Top-K 추출 (상위 3개)
-      const topChunks = scoredChunks.sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 10)
+      // 4. 유사도 정렬 및 Top-K 추출 (상위 5개)
+      const topChunks = scoredChunks.sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 5)
 
       console.log(
         '[메시지]: 유사도 검색 결과',
-        topChunks.map(c => `${c.category} (${c.score?.toFixed(11)})`),
+        topChunks.map(c => `${c.category} (${c.score?.toFixed(6)})`),
       )
 
       // 5. 프롬프트에 주입할 텍스트 생성

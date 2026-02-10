@@ -1,26 +1,20 @@
 import { useState, type KeyboardEvent } from 'react'
 import { HYPER_MENU_ITEMS } from '@/constant'
 
-interface ChatInputAreaProps {
-  onSend: (message: string) => void
-  isLoading: boolean
-  hasMessages: boolean
-  isLimited?: boolean
-  remaining?: number
-}
-
 const ChatInputArea = ({
   onSend,
   isLoading,
   hasMessages,
-  isLimited = false,
+  // isLimited = false, // Removed unused prop
   remaining,
-}: ChatInputAreaProps) => {
+  currentModel = 'Gemini',
+  onStop,
+}: IChatInputAreaProps) => {
   const [input, setInput] = useState('')
   const [shouldShowSuggestions, setShouldShowSuggestions] = useState(false)
 
   const handleSend = () => {
-    if (!input.trim() || isLoading || isLimited) return
+    if (!input.trim() || isLoading) return
     onSend(input)
     setInput('')
   }
@@ -32,14 +26,14 @@ const ChatInputArea = ({
     }
   }
 
-  const placeholderText = isLimited
-    ? '일일 질문 한도를 초과했습니다.'
-    : `무엇이든 물어보세요... ${remaining !== undefined ? `(일일 잔여 한도: ${remaining}회)` : ''}`
+  const placeholderText =
+    currentModel === 'Local'
+      ? '무엇이든 물어보세요... Local Gemma: 무제한'
+      : `무엇이든 물어보세요... ${remaining !== undefined ? `(일일 잔여 한도: ${remaining}회)` : ''}`
 
   return (
     <div className="w-full relative shrink-0 flex flex-col items-center justify-center">
-      {/* Suggestions (Visible only when focused & has messages) */}
-      {shouldShowSuggestions && !isLimited && (
+      {shouldShowSuggestions && (
         <div className="w-full max-w-[700px] mb-3 animate-fade-in-up">
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mask-fade-right">
             {HYPER_MENU_ITEMS.map(item => (
@@ -69,23 +63,33 @@ const ChatInputArea = ({
           onBlur={() => {
             setTimeout(() => setShouldShowSuggestions(false), 200)
           }}
-          disabled={isLoading || isLimited}
+          disabled={isLoading}
         />
         <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-800">
-          <span className="text-[10px] md:text-xs text-gray-500 font-medium ml-1">
-            Powered by Gemini 2.0 Flash Lite
+          <span className="text-[10px] md:text-xs font-medium ml-1 text-gray-500 transition-colors duration-300">
+            Powered by {currentModel === 'Gemini' ? '⚡ Gemini 2.0 Flash Lite' : 'Local Gemma 2'}
           </span>
-          <button
-            onClick={handleSend}
-            disabled={!input.trim() || isLoading || isLimited}
-            className={`flex items-center justify-center px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 ${
-              !input.trim() || isLoading || isLimited
-                ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20 active:scale-95'
-            }`}
-          >
-            전송
-          </button>
+          {isLoading ? (
+            <button
+              onClick={onStop}
+              className="flex items-center justify-center px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 bg-gray-700 hover:bg-red-600/80 text-white shadow-lg active:scale-95 group"
+            >
+              <span className="w-2 h-2 bg-white rounded-sm group-hover:bg-white/90" />
+              <span className="ml-2">중지</span>
+            </button>
+          ) : (
+            <button
+              onClick={handleSend}
+              disabled={!input.trim()}
+              className={`flex items-center justify-center px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 ${
+                !input.trim()
+                  ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                  : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20 active:scale-95'
+              }`}
+            >
+              전송
+            </button>
+          )}
         </div>
       </div>
     </div>

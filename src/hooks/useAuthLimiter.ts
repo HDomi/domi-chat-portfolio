@@ -3,7 +3,7 @@ import { auth, db } from '@/firebase'
 import { signInAnonymously } from 'firebase/auth'
 import { doc, getDoc, runTransaction } from 'firebase/firestore'
 
-const DAILY_LIMIT = 20 // 하루 20회 제한
+export const DAILY_LIMIT = 10 // 하루 15회 (Gemini), 이후 LocalModel
 
 export const useAuthLimiter = () => {
   const [isLimited, setIsLimited] = useState(false)
@@ -23,6 +23,7 @@ export const useAuthLimiter = () => {
         if (docSnap.exists()) {
           const currentCount = docSnap.data().count || 0
           setCount(currentCount)
+          // NOTE: 여기서는 limit 체크만 하고, 실제 모델 전환 로직은 ChatContext 등에서 처리
           if (currentCount >= DAILY_LIMIT) setIsLimited(true)
         }
       } catch (error) {
@@ -60,10 +61,7 @@ export const useAuthLimiter = () => {
         }
 
         const currentCount = sfDoc.data().count
-        if (currentCount >= DAILY_LIMIT) {
-          throw 'LIMIT_EXCEEDED'
-        }
-
+        // 여기서는 카운트만 증가시키고, 제한 여부는 호출부에서 결정하거나
         const nextCount = currentCount + 1
         transaction.update(docRef, { count: nextCount })
         return nextCount
@@ -72,12 +70,12 @@ export const useAuthLimiter = () => {
       setCount(newCount)
       return true
     } catch (e) {
-      if (e === 'LIMIT_EXCEEDED') setIsLimited(true)
+      console.error('Transaction failed: ', e)
       return false
     }
   }
 
   const remaining = Math.max(0, DAILY_LIMIT - count)
 
-  return { isLimited, remaining, incrementCount: increaseCount }
+  return { isLimited, remaining, incrementCount: increaseCount, count, DAILY_LIMIT }
 }

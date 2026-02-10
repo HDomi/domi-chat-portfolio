@@ -18,7 +18,9 @@ Google Gemini의 LLM과 Embedding 모델을 활용한 **RAG (Retrieval-Augmented
 ### **Backend & AI**
 
 - **Database**: Firebase Firestore (Vector Database 역할)
-- **AI Model**: Google Gemini Pro (`gemini-flash-latest`), Gemini Embeddings (`gemini-embedding-001`)
+- **AI Model (Hybrid)**:
+  - **Cloud**: Google Gemini 2.0 Flash Lite (Primary)
+  - **Local**: Google Gemma 2 (2b/9b) via Ollama (Secondary/Fallback)
 - **SDK**: `@google/generative-ai` (Official SDK), `firebase-admin` (Node.js ingestion)
 
 ---
@@ -52,19 +54,22 @@ Google Gemini의 LLM과 Embedding 모델을 활용한 **RAG (Retrieval-Augmented
 3. **Context Injection**: 추출된 문서를 시스템 프롬프트에 주입.
 4. **Answer Generation**: 완성된 프롬프트(`System Prompt + Context + User Question`)를 **Gemini LLM**에 전송하여 답변 생성.
 
-### **3. 사용량 제한 (Usage Limiting)**
+### **3. 하이브리드 AI 모델 전략 (Hybrid AI Strategy)**
 
-> **관련 파일**: `src/hooks/useAuthLimiter.ts`
+> **관련 파일**: `src/hooks/useChatModel.ts`, `src/hooks/useAuthLimiter.ts`
 
-비용 관리 및 남용 방지를 위해 **일일 질문 횟수 제한(Rate Limiting)** 기능을 구현했습니다.
+비용 효율성과 가용성을 극대화하기 위해 **Cloud + Local 하이브리드 전략**을 채택했습니다.
 
-1. **Anonymous Authentication**:
-   - 별도의 회원가입 절차 없이 `Firebase Anonymous Auth`를 통해 사용자를 식별(`uid`)합니다.
-2. **Firestore Transaction**:
-   - 동시성 제어를 위해 **Firestore Transaction**을 사용하여 조회수 카운팅의 정합성을 보장합니다.
-   - `daily_limits/{YYYY-MM-DD}/users/{uid}` 경로에 문서를 생성하여 날짜별로 카운트가 관리됩니다.
-3. **Daily Limit Policy**:
-   - 하루 최대 **20회**의 질문이 가능하며, 초과 시 `isLimited` 상태가 되어 질문이 차단됩니다.
+1. **Tier 1 (Gemini Cloud)**:
+   - 매일 지정된 무료 쿼터(예: 10회) 내에서는 **Gemini 2.0 Flash Lite**를 사용합니다.
+   - 가장 빠르고 정확한 답변을 제공합니다.
+
+2. **Tier 2 (Local LLM)**:
+   - 무료 쿼터 소진 시, 자동으로 **Local Gemma 2 (via Ollama)** 모델로 전환됩니다.
+   - 내 집 서버에 구축된 Ollama API를 호출하여 **비용 "0"**으로 무제한 서비스를 제공합니다.
+
+3. **Fallback System**:
+   - Gemini API 장애 발생 시, 즉시 Local Gemma로 전환하여 서비스 중단 없는 가용성을 보장합니다.
 
 ---
 
@@ -123,6 +128,29 @@ src/
 
 ---
 
+6. **Local LLM Setup (Optional)**
+
+만약 로컬 모델(Gemma)을 하이브리드 구성으로 사용하려면, Ollama가 설치된 서버가 필요합니다.
+
+```bash
+# 1. Ollama 설치
+curl -fsSL https://ollama.com/install.sh | sh
+
+# 2. Gemma 2 모델 설치
+ollama pull gemma2:9b
+
+# 3. 서버 실행 (CORS 허용)
+OLLAMA_ORIGINS="*" ollama serve
+```
+
+또한 `.env` 파일에 로컬 API 주소를 추가해야 합니다.
+
+```env
+VITE_LOCAL_MODEL_API=http://your-server-ip:11434/api/generate
+```
+
+---
+
 ## 🚀 설치 및 실행 (Setup)
 
 ### 1. 환경 변수 설정 (.env)
@@ -131,6 +159,7 @@ src/
 
 ```env
 VITE_GEMINI_API_KEY=your_gemini_api_key
+VITE_LOCAL_MODEL_API=http://localhost:11434/api/generate
 VITE_FIREBASE_API_KEY=your_firebase_api_key
 VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=your_project_id
