@@ -21,21 +21,21 @@ export const useChatModel = (): IUseChatModelReturn => {
 
     const result = await model.generateContentStream([systemPrompt, `질문: ${userText}`])
 
-    let fullText = ''
+    // let fullText = ''
     try {
       for await (const chunk of result.stream) {
         if (signal.aborted) {
           throw new DOMException('Aborted', 'AbortError')
         }
         const chunkText = chunk.text()
-        fullText += chunkText
+        // fullText += chunkText
         onStream(chunkText, false)
       }
-      console.log('Gemini Full Text:', fullText)
+      // console.info('Gemini Full Text:', fullText)
       onStream('', true)
     } catch (error: unknown) {
       if (error instanceof Error && (error.name === 'AbortError' || signal.aborted)) {
-        console.log('Gemini generation stopped by user.')
+        console.info('Gemini generation stopped by user.')
         onStream('', true) // Stop indicator
       } else {
         throw error
@@ -109,7 +109,7 @@ export const useChatModel = (): IUseChatModelReturn => {
       }
     } catch (error: unknown) {
       if (error instanceof Error && error.name === 'AbortError') {
-        console.log('LocalModel generation stopped by user.')
+        console.info('LocalModel generation stopped by user.')
       } else {
         throw error
       }

@@ -63,5 +63,6 @@ android/keystore.properties
 android/app/zentrix-release-key.keystore
 
 upload-resume.mjs
+debug-retrieval.mjs
 serviceAccount.json
 models.json

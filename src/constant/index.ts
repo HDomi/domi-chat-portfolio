@@ -38,12 +38,12 @@ export const getPromptForGemini = (context?: string) => {
       - "그 부분에 대한 정보는 학습되지 않았습니다. 이메일(hwangjae1139@naver.com)로 문의해 주시면 직접 답변드리겠습니다."
     4. 경력등에 대해 나열할때는 최신 경력이 상위에 가도록 정렬하세요.
     5. 경력, 진행했던 프로젝트등을 나열할 때에는 자세하게 설명해 주세요.
-    5. 경력, 진행했던 프로젝트등을 나열할 때에는 가장 최신항목이 앞에 배치되도록 해주세요.
     6. 경력, 진행했던 프로젝트등을 나열할 때에는 **Markdown**을 적극 활용하여 각 항목별로 구분감이 있도록 해주세요.
     7. 답변은 일부 고유명사, 기술스택등을 제외하고 **한국어**로만 해야 합니다.
     8. "5년차 개발자"라는 말은 안붙여도 됩니다.
     9. 강조 표시를 할때, 뒷 배경이 어두우니(회색/검은색계열), 파란색, 초록색등은 사용하지 않습니다.
     10. 프로젝트 이력 나열 시 반드시 **Markdown 이미지 문법** ![설명](주소) 을 사용하여 이미지를 첨부하세요. (HTML <img> 태그 절대 사용 금지)
+    11. 프로젝트 나열 시 Zentrix, Accu Insight, project_hanwha_mfe, project_cosmax_lead를 먼저 배치하고 이후에 다른 프로젝트 컨텍스트가 배치되도록 해주세요.
 
     [답변 스타일 가이드]
     1. **말투:** 자신감 있고 정중한 '해요체' (~해요)를 사용하세요.
@@ -83,8 +83,8 @@ export const getPromptForLocalModel = (context?: string) => {
     - 중국어, 일본어 강력히 금지 
 
   3. **프로젝트/경력 나열 규칙:**
-    - 반드시 **최신 날짜**의 항목이 가장 위에 오도록 정렬하세요.
     - 각 항목은 구분감 있게 작성하세요.
+    - 프로젝트 나열 시 Zentrix, Accu Insight, project_hanwha_mfe, project_cosmax_lead를 먼저 배치하고 이후에 다른 프로젝트 컨텍스트가 배치되도록 해주세요.
 
   4. **이미지 처리 규칙 (매우 중요):**
     - '<CONTEXT>' 내의 해당 항목에 연결된 정확한 이미지 URL만 사용하세요.
@@ -155,8 +155,24 @@ export const DATA_CHUNKS = [
     `,
   },
   {
+    category: 'project_summary',
+    content: `
+      [전체 프로젝트 요약 목록]
+      제가 진행한 주요 프로젝트 목록입니다. (최신순)
+      1. 젠트릭스 (Zentrix): 오프라인 지원 하이브리드 앱 플랫폼 (대표 프로젝트, 프론트엔드 리드)
+      2. 한화오션 선박 데이터 플랫폼: MFE 기반 대시보드
+      3. COSMAX Trend Detector: 화장품 트렌드 분석
+      4. SK Accu Insight: 데이터 분석 플랫폼
+      5. SK AICC 챗봇
+      6. WannaBe 어드민
+      7. Giddy
+      8. SK Aiden Vas
+    `,
+  },
+  {
     category: 'personal_history',
     content: `
+      [개인경력]
       저는 디자인&퍼블리셔로 1년, 프론트개발자로 약 3년3개월 근무하였습니다. 이후, 백엔드도 조금씩 경험하며,
       풀스택의 꿈을 꾸고있습니다.
     `,
@@ -180,7 +196,7 @@ export const DATA_CHUNKS = [
   {
     category: 'project_zentrix_tech_offline',
     content: `
-      [Zentrix 기술 성과 1: 오프라인-퍼스트 아키텍처 & 어댑터 패턴]
+      [프로젝트 Zentrix 기술 성과 1: 오프라인-퍼스트 아키텍처 & 어댑터 패턴]
       - 문제: 건설 현장의 열악한 네트워크 환경. 웹(Web)과 앱(App) 환경의 DB 기술 파편화(앱은 Native DB, 웹은 DB 없음).
       - 이미지: https://github.com/HDomi/image-temp/blob/main/zentrix2.png?raw=true
       - 해결:
@@ -191,7 +207,7 @@ export const DATA_CHUNKS = [
   {
     category: 'project_zentrix_tech_sync',
     content: `
-      [Zentrix 기술 성과 2: 백그라운드 동기화 & 성능 최적화]
+      [프로젝트 Zentrix 기술 성과 2: 백그라운드 동기화 & 성능 최적화]
       - 동기화(Sync): Web Worker를 활용한 'SyncWorker' 모듈 개발. UI 스레드 차단 없이 백그라운드에서 로컬 DB와 서버 간 양방향 데이터 정합성 확보.
       - 렌더링 최적화: Konva.js 기반 인터랙티브 도면 에디터(핀치 줌, 스냅핑) 개발. 가상 스크롤(Virtual Scrolling) 및 이미지 지연 로딩으로 렌더링 성능 40% 개선.
       - 대용량 처리: 수천 장의 사진 업로드를 위한 비동기 큐(Queue) 시스템 구축 (실패 시 재시도 로직 포함).

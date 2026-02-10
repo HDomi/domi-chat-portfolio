@@ -38,10 +38,27 @@ export const useRetriever = () => {
         score: cosineSimilarity(queryEmbedding, chunk.embedding),
       }))
 
-      // 4. 유사도 정렬 및 Top-K 추출 (상위 5개)
-      const topChunks = scoredChunks.sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 10)
+      // 4. 유사도 정렬 및 Top-K 추출 (Dynamic Limit)
+      // 프로젝트 관련 질문이면 더 많은 컨텍스트(8개), 일반 질문이면 핵심만(3개)
+      const projectKeywords = [
+        '프로젝트',
+        '경력',
+        '이력',
+        '포트폴리오',
+        '작업',
+        'project',
+        'work',
+        'development',
+        'made',
+      ]
+      const isProjectRelated = projectKeywords.some(keyword =>
+        query.toLowerCase().includes(keyword),
+      )
 
-      console.log(
+      const limit = isProjectRelated ? 14 : 3
+      const topChunks = scoredChunks.sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, limit)
+
+      console.info(
         '[메시지]: 유사도 검색 결과',
         topChunks.map(c => `${c.category} (${c.score?.toFixed(11)})`),
       )

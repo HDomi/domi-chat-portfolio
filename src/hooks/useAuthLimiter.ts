@@ -3,7 +3,7 @@ import { auth, db } from '@/firebase'
 import { signInAnonymously } from 'firebase/auth'
 import { doc, getDoc, runTransaction } from 'firebase/firestore'
 
-export const DAILY_LIMIT = 10 // 하루 15회 (Gemini), 이후 LocalModel
+export const DAILY_LIMIT = 15 // 하루 15회 (Gemini), 이후 LocalModel
 
 export const useAuthLimiter = () => {
   const [isLimited, setIsLimited] = useState(false)
