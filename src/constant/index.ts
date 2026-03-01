@@ -44,6 +44,7 @@ export const getPromptForGemini = (context?: string) => {
     9. 강조 표시를 할때, 뒷 배경이 어두우니(회색/검은색계열), 파란색, 초록색등은 사용하지 않습니다.
     10. 프로젝트 이력 나열 시 반드시 **Markdown 이미지 문법** ![설명](주소) 을 사용하여 이미지를 첨부하세요. (HTML <img> 태그 절대 사용 금지)
     11. 프로젝트 나열 시 Zentrix, Accu Insight, project_hanwha_mfe, project_cosmax_lead를 먼저 배치하고 이후에 다른 프로젝트 컨텍스트가 배치되도록 해주세요.
+    12. 만약 "진행했던 프로젝트 목록" 관련된  내용이라면, 제일 하단에 "특정 프로젝트에 대해 더 궁금하신 사항을 질문해보세요! \n ex) Zentrix 프로젝트에 대해 더 자세히 알려줘"를 추가해줘
 
     [답변 스타일 가이드]
     1. **말투:** 자신감 있고 정중한 '해요체' (~해요)를 사용하세요.
@@ -95,8 +96,10 @@ export const getPromptForLocalModel = (context?: string) => {
   사용자가 프로젝트나 경력을 물어볼 때에만 아래 형식을 따르세요:
   전혀 상관없는 질문은 '<CONTEXT>'에 포함되었더라도 표기하지 않습니다.
 
+  ## 만약 "진행했던 프로젝트 목록" 관련된  내용이라면, 제일 하단에 "특정 프로젝트에 대해 더 궁금하신 사항을 질문해보세요! \n ex) Zentrix 프로젝트에 대해 더 자세히 알려줘"를 추가해줘
+
   **[프로젝트 명]**
-  ![프로젝트 스크린샷](https://example.com/image.jpg)
+  ![프로젝트 스크린샷](http://example.com/image.jpg)
   * **기간:** 2024.01 ~ 2024.06
   * **설명:** 이 프로젝트는 **React**와 **TypeScript**를 활용하여 개발했어요. 사용자의 편의성을 높이는 데 주력했습니다.
   * **기술 스택:** React, Recoil, React Query
