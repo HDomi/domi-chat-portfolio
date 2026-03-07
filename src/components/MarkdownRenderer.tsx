@@ -119,14 +119,25 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
             hr: props => <hr className="my-6 border-gray-600" {...props} />,
 
             // 10. 이미지
-            img: props => (
-              <img
-                className="max-w-full h-auto rounded-lg my-4 border border-gray-700 cursor-pointer hover:opacity-80 transition-opacity"
-                alt={props.alt || ''}
-                onClick={() => props.src && openImageModal(props.src)}
-                {...props}
-              />
-            ),
+            img: ({ src, alt, ...rest }) => {
+              // 깃허브 일반 페이지 링크(blob)를 이미지 원본(raw) 링크로 변환하여 ORB 블록 에러 방지
+              const imgSrc =
+                src?.startsWith('https://github.com/') && src?.includes('/blob/')
+                  ? src
+                      .replace('https://github.com/', 'https://raw.githubusercontent.com/')
+                      .replace('/blob/', '/')
+                  : src
+
+              return (
+                <img
+                  className="max-w-full h-auto rounded-lg my-4 border border-gray-700 cursor-pointer hover:opacity-80 transition-opacity"
+                  src={imgSrc}
+                  alt={alt || ''}
+                  onClick={() => imgSrc && openImageModal(imgSrc)}
+                  {...rest}
+                />
+              )
+            },
           }}
         >
           {content}
